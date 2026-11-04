@@ -18,14 +18,27 @@
     <Button android:id="@+id/nextButton" android:layout_width="0dp" android:layout_height="wrap_content" android:minHeight="48dp"
         android:text="@string/next_animal" app:layout_constraintTop_toBottomOf="@id/careProgress"
         app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" />
-    <!-- EXERCICE M2.1 : construire une chaîne horizontale entre ces deux boutons. -->
+    <!-- EXERCICE M2.1B : chaîne horizontale careButton <-> snackButton.
+         Principe d'une chaîne ConstraintLayout : deux vues reliées l'une à l'autre dans les deux
+         sens (A.end -> B.start ET B.start -> A.end), la première accrochée au bord gauche du parent
+         et la dernière au bord droit. Avec une largeur 0dp ("match constraints") chacune prend
+         la moitié de l'espace. chainStyle="spread" (posé sur la TÊTE de la chaîne, ici careButton)
+         répartit l'espace restant autour des éléments. Les deux boutons partagent le même haut
+         (sous nextButton) ; layout_height=wrap_content + minHeight=48dp laisse le texte passer à la
+         ligne avec une police agrandie sans jamais passer sous 48dp (zone tactile). -->
     <Button android:id="@+id/careButton" android:layout_width="0dp" android:layout_height="wrap_content" android:minHeight="48dp"
         android:text="@string/care_toast"
-        app:layout_constraintTop_toBottomOf="@id/nextButton" app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toBottomOf="@id/nextButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/snackButton"
+        app:layout_constraintHorizontal_chainStyle="spread" />
     <Button android:id="@+id/snackButton" android:layout_width="0dp" android:layout_height="wrap_content" android:minHeight="48dp"
         android:text="@string/care_snack"
-        app:layout_constraintTop_toBottomOf="@id/careButton" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toBottomOf="@id/nextButton"
+        app:layout_constraintStart_toEndOf="@id/careButton"
+        app:layout_constraintEnd_toEndOf="parent" />
     <androidx.constraintlayout.widget.Barrier android:id="@+id/careActionsBottom" android:layout_width="wrap_content" android:layout_height="wrap_content"
         app:barrierDirection="bottom" app:constraint_referenced_ids="careButton,snackButton" />
     <Button android:id="@+id/notificationButton" android:layout_width="0dp" android:layout_height="wrap_content" android:minHeight="48dp"

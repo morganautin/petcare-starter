@@ -235,11 +235,43 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun restaurerSession(etat: Bundle?) {
-        // EXERCICE M2.1 : restaurer la sélection et les compteurs depuis etat.
+        // EXERCICE M2.1C — restauration.
+        // 1. Premier lancement : Android passe null, il n'y a rien à restaurer, on sort.
+        if (etat == null) return
+
+        // 2. Sélection : on relit l'index avec une valeur par défaut (0) si la clé est absente,
+        //    puis on vérifie qu'il est dans les limites de la liste (la liste pourrait avoir
+        //    changé de taille entre deux versions). Hors limites -> on retombe sur 0.
+        val index = etat.getInt(KEY_INDEX, 0)
+        indexAnimal = if (index in animaux.indices) index else 0
+
+        // 3. Compteurs : on relit les deux tableaux parallèles (ids / valeurs).
+        //    S'ils sont absents (null) ou de tailles différentes (données incohérentes),
+        //    on ne restaure rien : les compteurs restent à zéro, l'app reste utilisable.
+        val ids = etat.getLongArray(KEY_IDS)
+        val valeurs = etat.getIntArray(KEY_VALEURS)
+        if (ids == null || valeurs == null || ids.size != valeurs.size) return
+
+        // 4. On reconstruit la Map<Long, Int> à partir des deux tableaux :
+        //    ids.zip(valeurs) crée des paires (id, valeur), toMap() en fait une Map.
+        //    compteurs.restaurer() filtre déjà les ids <= 0 et les valeurs négatives.
+        compteurs.restaurer(ids.zip(valeurs.toTypedArray()).toMap())
+        // afficherAnimal() est appelé juste après par onCreate : l'écran reflétera cet état.
     }
 
     private fun enregistrerSession(sortie: Bundle) {
-        // EXERCICE M2.1 : enregistrer la sélection et une copie des compteurs dans sortie.
+        // EXERCICE M2.1C — sauvegarde (appelée par onSaveInstanceState avant une rotation,
+        // un changement de langue, ou si Android doit tuer l'activité en arrière-plan).
+        // 1. La sélection courante : un simple entier.
+        sortie.putInt(KEY_INDEX, indexAnimal)
+
+        // 2. Les compteurs : un Bundle ne sait pas stocker une Map directement.
+        //    On prend UNE copie figée (snapshot) pour que les deux tableaux soient
+        //    cohérents entre eux, puis on sépare clés et valeurs en deux tableaux
+        //    de même longueur et de même ordre.
+        val copie = compteurs.snapshot()
+        sortie.putLongArray(KEY_IDS, copie.keys.toLongArray())
+        sortie.putIntArray(KEY_VALEURS, copie.values.toIntArray())
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -316,5 +348,10 @@ class MainActivity : AppCompatActivity() {
         private const val CHANNEL_ID = "care_reminders"
         // Une file globale : KEEP ignore une demande si la précédente est inachevée.
         private const val WORK_NAME = "petcare-check"
+        // Clés du Bundle de session (M2.1C). Des constantes garantissent que l'écriture
+        // et la lecture utilisent exactement la même chaîne.
+        private const val KEY_INDEX = "session_index"
+        private const val KEY_IDS = "session_ids"
+        private const val KEY_VALEURS = "session_valeurs"
     }
 }

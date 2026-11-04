@@ -15,7 +15,11 @@ class AboutActivity : AppCompatActivity() {
     }
 
     private fun afficherPresentation() {
-        // EXERCICE M2.1 : remplacer cet écran d’attente par activity_about.
-        setContentView(R.layout.activity_pending)
+        // EXERCICE M2.1A
+        // setContentView "gonfle" (inflate) le fichier XML et l'installe comme écran de l'activité.
+        // On charge activity_about : il contient déjà root, pageTitle, le texte de présentation
+        // dans un ScrollView et closeButton. Les findViewById qui suivent dans onCreate
+        // trouveront donc bien ces IDs.
+        setContentView(R.layout.activity_about)
     }
 }
