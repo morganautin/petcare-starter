@@ -22,7 +22,11 @@
         <item quantity="other">%1$d care actions recorded during this session</item>
     </plurals>
     <string name="species_unknown">Unknown species</string>
-    <!-- EXERCICE 3 : ajouter care_done, undo, reminder_title et reminder_text en anglais.
-         Conserver les paramètres %1$s présents dans values/strings.xml. -->
+    <!-- EXERCICE 3A : traductions anglaises. Même identifiant que dans values/strings.xml,
+         et on garde %1$s qui sera remplacé par le nom de l'animal via getString(). -->
+    <string name="care_done">Care recorded for %1$s</string>
+    <string name="undo">Undo</string>
+    <string name="reminder_title">PetCare · Demo</string>
+    <string name="reminder_text">Check %1$s’s care log.</string>
     <string name="exercise_pending">Exercise %1$d: feature to complete.</string>
 </resources>

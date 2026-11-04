@@ -7,15 +7,15 @@
     <string name="next_animal">Changer d’animal</string>
     <string name="care_toast">Confirmer un soin avec un Toast</string>
     <string name="care_snack">Confirmer un soin avec annulation</string>
-    <string name="care_done" tools:ignore="MissingTranslation">Soin confirmé pour %1$s</string>
-    <string name="undo" tools:ignore="MissingTranslation">Annuler</string>
+    <string name="care_done">Soin confirmé pour %1$s</string>
+    <string name="undo">Annuler</string>
     <string name="demo_notification">Afficher un rappel de démonstration</string>
     <string name="notification_denied">Notifications refusées. Les autres fonctions restent disponibles.</string>
     <string name="notifications_disabled">Notifications désactivées dans les réglages de l’application ou du canal.</string>
     <string name="channel_name">Rappels de soins</string>
     <string name="channel_description">Notifications de démonstration PetCare</string>
-    <string name="reminder_title" tools:ignore="MissingTranslation">PetCare · Démonstration</string>
-    <string name="reminder_text" tools:ignore="MissingTranslation">Consultez le carnet de %1$s.</string>
+    <string name="reminder_title">PetCare · Démonstration</string>
+    <string name="reminder_text">Consultez le carnet de %1$s.</string>
     <string name="schedule_check">Planifier une vérification simulée</string>
     <string name="work_requested">Demande envoyée. Vérifiez l’état du travail.</string>
     <string name="work_none">Aucun travail planifié.</string>

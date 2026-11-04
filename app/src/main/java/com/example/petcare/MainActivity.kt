@@ -232,9 +232,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun programmerVerification() {
-        // EXERCICE 3 : créer une OneTimeWorkRequest<PetCareWorker> avec les deux entrées,
-        // puis l’envoyer avec WORK_NAME et ExistingWorkPolicy.KEEP.
-        exerciceACompleter(3)
+        // EXERCICE 3B
+        // 1. On prépare les données d'entrée du Worker. workDataOf crée un objet "Data"
+        //    (un petit dictionnaire clé → valeur) que WorkManager transmettra au Worker.
+        //    Les clés sont les constantes de PetCareWorker pour éviter les fautes de frappe.
+        val entrees = workDataOf(
+            PetCareWorker.ANIMAL_ID to animal.id,
+            PetCareWorker.ANIMAL_NAME to animal.nom
+        )
+
+        // 2. On construit une demande de travail PONCTUELLE (OneTime = exécutée une seule fois)
+        //    qui lancera PetCareWorker. Le tag "petcare-demo" sert à retrouver/annuler
+        //    ce type de travail plus tard si besoin.
+        val demande = OneTimeWorkRequestBuilder<PetCareWorker>()
+            .setInputData(entrees)
+            .addTag("petcare-demo")
+            .build()
+
+        // 3. On envoie la demande à WorkManager sous un nom UNIQUE (WORK_NAME).
+        //    ExistingWorkPolicy.KEEP : si un travail du même nom est déjà en cours ou
+        //    en attente, la nouvelle demande est ignorée (pas de doublon). C'est ce qui
+        //    explique qu'un double clic rapide ne lance qu'une seule vérification.
+        WorkManager.getInstance(this).enqueueUniqueWork(
+            WORK_NAME,
+            ExistingWorkPolicy.KEEP,
+            demande
+        )
+
+        // 4. On informe l'utilisateur. Le résultat réel arrivera dans workText grâce au
+        //    LiveData observé dans onCreate (ENQUEUED → RUNNING → SUCCEEDED).
+        Toast.makeText(this, R.string.work_requested, Toast.LENGTH_SHORT).show()
     }
 
     private fun exerciceACompleter(numero: Int) {
