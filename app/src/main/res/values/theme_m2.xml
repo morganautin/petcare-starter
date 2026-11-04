@@ -1,4 +1,18 @@
 <resources>
-    <!-- EXERCICE M2.2 : relier les cinq attributs Material à colors_m2.xml. -->
-    <style name="Theme.PetCare.M2" parent="Theme.PetCare" />
+    <!-- EXERCICE M2.2B : le style hérite toujours de Theme.PetCare (DayNight) et relie
+         chaque RÔLE Material (attribut) à une RESSOURCE couleur de colors_m2.xml.
+         Comme values-night/colors_m2.xml définit les mêmes noms, Android choisira
+         automatiquement la variante sombre : rien à écrire ici pour le mode nuit. -->
+    <style name="Theme.PetCare.M2" parent="Theme.PetCare">
+        <!-- Couleur principale : toolbar, boutons, arc de progression -->
+        <item name="colorPrimary">@color/petcare_m2_primary</item>
+        <!-- Variante plus foncée : barre d'état -->
+        <item name="colorPrimaryVariant">@color/petcare_m2_primary_variant</item>
+        <!-- Couleur du contenu (texte, icônes) posé SUR colorPrimary -->
+        <item name="colorOnPrimary">@color/petcare_m2_on_primary</item>
+        <!-- Couleur d'accent secondaire -->
+        <item name="colorSecondary">@color/petcare_m2_secondary</item>
+        <!-- Contenu posé sur colorSecondary -->
+        <item name="colorOnSecondary">@color/petcare_m2_on_secondary</item>
+    </style>
 </resources>

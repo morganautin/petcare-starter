@@ -280,7 +280,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configurerAccessibilite() {
-        // EXERCICE M2.2 : titre accessible et description contextualisée du bouton information.
+        // EXERCICE M2.2C — appelée à chaque afficherAnimal(), donc suit la sélection courante.
+        // 1. Le nom de l'animal devient un TITRE pour les lecteurs d'écran : TalkBack permet
+        //    de naviguer de titre en titre, comme les <h1> d'une page web.
+        ViewCompat.setAccessibilityHeading(animalText, true)
+
+        // 2. L'icône "i" n'a pas de texte visible : sa description doit dire ce qu'on obtient
+        //    ET pour quel animal. On interpole le nom courant dans la ressource (%1$s)
+        //    au lieu de la description générique du XML.
+        findViewById<ImageButton>(R.id.animalInfoButton).contentDescription =
+            getString(R.string.animal_info_description, animal.nom)
     }
 
     private fun installerNavigation() {
