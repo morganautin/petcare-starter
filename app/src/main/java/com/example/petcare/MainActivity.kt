@@ -110,14 +110,51 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun confirmerAvecToast() {
-        // EXERCICE 2A : confirmer pour animal.id, rafraîchir, afficher un Toast avec care_done.
-        exerciceACompleter(2)
+        // EXERCICE 2A
+        // 1. On enregistre un soin pour l'animal actuellement sélectionné (+1 dans le compteur).
+        compteurs.confirmer(animal.id)
+
+        // 2. On rafraîchit l'écran pour que le nouveau nombre de soins s'affiche tout de suite.
+        afficherAnimal()
+
+        // 3. On prépare le texte : la ressource care_done contient "%1$s", getString
+        //    remplace ce "%1$s" par le nom de l'animal.
+        val message = getString(R.string.care_done, animal.nom)
+
+        // 4. On crée le Toast (durée courte) ET on l'affiche avec .show().
+        //    Sans .show(), le Toast est créé en mémoire mais jamais visible à l'écran.
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun confirmerAvecAnnulation() {
-        // EXERCICE 2B : capturer animal, confirmer et proposer Annuler dans un Snackbar.
-        // CompteurSoins.confirmer/annuler et afficherAnimal sont déjà fournis.
-        exerciceACompleter(2)
+        // EXERCICE 2B
+        // 1. On CAPTURE l'animal dans une variable locale (val = immuable).
+        //    Important : l'utilisateur peut appuyer sur "Changer d'animal" pendant que le
+        //    Snackbar est encore visible. Si on utilisait "animal" directement dans l'action
+        //    Annuler, on annulerait le soin du MAUVAIS animal. La variable capturée fige
+        //    l'animal concerné au moment du clic.
+        val animalConcerne = animal
+
+        // 2. On enregistre le soin pour cet animal précis, puis on rafraîchit l'affichage.
+        compteurs.confirmer(animalConcerne.id)
+        afficherAnimal()
+
+        // 3. On construit le message avec le nom de l'animal capturé.
+        val message = getString(R.string.care_done, animalConcerne.nom)
+
+        // 4. On crée le Snackbar attaché à la vue racine "root" (le Snackbar a besoin d'une
+        //    vue pour savoir où s'afficher), avec une durée longue pour laisser le temps d'annuler.
+        Snackbar.make(root, message, Snackbar.LENGTH_LONG)
+            // 5. On ajoute l'action "Annuler" (texte de la ressource undo).
+            //    Le bloc { } est exécuté UNIQUEMENT si l'utilisateur appuie sur Annuler.
+            .setAction(R.string.undo) {
+                // 6. On retire UN soin à l'animal capturé (pas à l'animal sélectionné actuel).
+                compteurs.annuler(animalConcerne.id)
+                // 7. On rafraîchit pour voir le compteur redescendre.
+                afficherAnimal()
+            }
+            // 8. Comme pour le Toast : sans .show(), rien n'apparaît.
+            .show()
     }
 
     private fun creerCanal() {
@@ -158,10 +195,32 @@ class MainActivity : AppCompatActivity() {
 
     // EXERCICE 2 : contenu du rappel. Canal, permission et PendingIntent sont fournis.
     private fun construireRappel(animalConcerne: Animal): Notification? {
-        // EXERCICE 2C : retourner une notification construite avec les ressources du rappel.
-        // Utiliser intentionOuvrirApp() ; canal et permission sont déjà gérés.
-        exerciceACompleter(2)
-        return null // Aucun rappel tant que cette partie reste à compléter.
+        // EXERCICE 2C
+        // NotificationCompat.Builder construit la notification étape par étape.
+        // On lui donne le contexte (this) et l'identifiant du canal créé dans creerCanal().
+        // Sur Android 8+, une notification sans canal valide n'est jamais affichée.
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            // 1. Petite icône : OBLIGATOIRE, sinon la notification est refusée par le système.
+            //    C'est l'icône monochrome affichée dans la barre d'état.
+            .setSmallIcon(R.drawable.ic_pet_notification)
+            // 2. Titre de la notification (ligne du haut).
+            .setContentTitle(getString(R.string.reminder_title))
+            // 3. Texte de la notification : reminder_text contient "%1$s", remplacé par le nom
+            //    de l'animal passé en paramètre (animalConcerne, pas "animal", car la sélection
+            //    peut avoir changé entre le clic et l'affichage, par ex. après la demande de permission).
+            .setContentText(getString(R.string.reminder_text, animalConcerne.nom))
+            // 4. Intention déclenchée quand l'utilisateur touche la notification :
+            //    intentionOuvrirApp() renvoie un PendingIntent qui ouvre MainActivity.
+            .setContentIntent(intentionOuvrirApp())
+            // 5. Suppression automatique : la notification disparaît dès qu'on la touche.
+            .setAutoCancel(true)
+            // 6. Priorité : nécessaire pour les anciennes versions d'Android (avant les canaux),
+            //    cohérente avec IMPORTANCE_DEFAULT du canal.
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            // 7. build() assemble tout et renvoie l'objet Notification final.
+            //    L'affichage lui-même est fait par afficherNotification() avec l'id fixe 1001 :
+            //    comme l'id ne change pas, un nouveau rappel REMPLACE le précédent.
+            .build()
     }
 
     private fun intentionOuvrirApp(): PendingIntent {
